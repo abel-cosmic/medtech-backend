@@ -25,7 +25,7 @@ export class UserTypeGuard implements CanActivate {
     }
     const request = context.switchToHttp().getRequest();
     const token = request.headers.authorization?.split(' ')[1];
-
+    console.log(token);
     if (!token) {
       throw new UnauthorizedException('Token not found');
     }
