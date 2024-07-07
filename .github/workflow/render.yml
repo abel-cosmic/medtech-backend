@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: medtech-backend
+    env: node
+    region: oregon
+    branch: development
+    instanceType: free
+    buildCommand: npm install; npx prisma generate; npm run build
+    startCommand: npm run start:prod
+    autoDeploy: true
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        from: environment
+      - key: DATABASE_URL
+        from: environment
+    pullRequestPreviewsEnabled: false
+    domains:
+      - medtech-backend-62i8.onrender.com
