@@ -11,6 +11,7 @@ import {
   UseGuards,
   BadRequestException,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -19,6 +20,9 @@ import { AuthService } from '@/auth/auth.service';
 import { User } from '@prisma/client';
 import { AuthPayloadDto } from '@/auth/dto/auth.dto';
 import { LocalAuthGuard } from '@/auth/local.auth.guard';
+import { UserTypeGuard } from '@/auth/user-type.guard';
+import { UserType } from '@/auth/user-type.decorator';
+import { GetAllUsersDto } from './dto/get-all-user.dto';
 
 type UserWithoutPassword = Omit<User, 'password'>;
 @Controller('user')
@@ -74,9 +78,14 @@ export class UserController {
     return this.authService.login(user);
   }
 
+  @UseGuards(UserTypeGuard)
+  @UserType('SUPERADMIN', 'ADMIN')
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Query() params?: GetAllUsersDto): Promise<{
+    message: string;
+    data: User[];
+  }> {
+    return this.userService.findAll(params);
   }
 
   @Get(':id')

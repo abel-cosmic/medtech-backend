@@ -12,7 +12,7 @@ async function bootstrap() {
 
   const options = new DocumentBuilder()
     .setTitle('MEDTECH API ENDPOINTS')
-    .setDescription('User  Management system for MEDTECH TECHNOLOGIES')
+    .setDescription('User  Management system for MEDTECH')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

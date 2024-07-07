@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { User } from '@prisma/client';
 import { PrismaService } from '@/prisma/prisma.service';
+import { GetAllUsersDto } from './dto/get-all-user.dto';
 type UserWithoutPassword = Omit<User, 'password'>;
 @Injectable()
 export class UserService {
@@ -87,8 +88,24 @@ export class UserService {
       },
     });
   }
-  findAll() {
-    return `This action returns all user`;
+  async findAll(params?: GetAllUsersDto): Promise<{
+    message: string;
+    data: User[];
+  }> {
+    const { skip = 0, take = 10, cursor, where, orderBy } = params || {};
+
+    const users = await this.prisma.user.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+    });
+
+    return {
+      message: 'Users retrieved successfully',
+      data: users,
+    };
   }
 
   findOne(id: number) {
