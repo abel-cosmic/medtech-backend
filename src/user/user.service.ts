@@ -15,11 +15,10 @@ export class UserService {
     username: string,
     phoneNumber: string,
     password: string,
+    branchId?: number,
   ): Promise<{ message: string; data: UserWithoutPassword }> {
     const existingUser = await this.prisma.user.findUnique({
-      where: {
-        username,
-      },
+      where: { username },
     });
     if (existingUser) {
       throw new BadRequestException('User already exists');
@@ -46,8 +45,38 @@ export class UserService {
         password: false,
       },
     });
+    switch (userType) {
+      case UserType.SUPERADMIN:
+        await this.prisma.superAdmin.create({
+          data: { userId: newUser.id },
+        });
+        break;
+      case UserType.ADMIN:
+        if (!branchId) {
+          throw new BadRequestException(
+            'branchId is required for ADMIN user type',
+          );
+        }
+        await this.prisma.admin.create({
+          data: { userId: newUser.id, branchId },
+        });
+        break;
+      case UserType.DATAENCODER:
+        if (!branchId) {
+          throw new BadRequestException(
+            'branchId is required for DATAENCODER user type',
+          );
+        }
+        await this.prisma.dataEncoder.create({
+          data: { userId: newUser.id, branchId },
+        });
+        break;
+      default:
+        throw new BadRequestException('Invalid user type');
+    }
+
     return {
-      message: 'User created',
+      message: 'User created successfully',
       data: newUser,
     };
   }

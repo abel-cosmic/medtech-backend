@@ -33,8 +33,15 @@ export class UserController {
   async create(
     @Body() data: CreateUserDto,
   ): Promise<{ message: string; data: UserWithoutPassword }> {
-    const { userType, firstName, lastName, username, phoneNumber, password } =
-      data;
+    const {
+      userType,
+      firstName,
+      lastName,
+      username,
+      phoneNumber,
+      password,
+      branchId,
+    } = data;
     try {
       return await this.userService.create(
         userType,
@@ -43,6 +50,7 @@ export class UserController {
         username,
         phoneNumber,
         password,
+        branchId,
       );
     } catch (error) {
       if (error instanceof BadRequestException) {
