@@ -23,8 +23,8 @@ import { UserType } from '@/auth/user-type.decorator';
 export class SystemLogController {
   constructor(private readonly systemLogService: SystemLogService) {}
 
-  // @UseGuards(UserTypeGuard)
-  // @UserType('SUPERADMIN')
+  @UseGuards(UserTypeGuard)
+  @UserType('SUPERADMIN')
   @Post()
   @UsePipes(new ValidationPipe())
   create(@Body() data: CreateSystemLogDto) {
