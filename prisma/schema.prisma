@@ -43,17 +43,6 @@ model User {
   SystemLog   SystemLog[]
 }
 
-model Broker {
-  id Int @id @default(autoincrement())
-
-  branch   Branch    @relation(fields: [branchId], references: [id])
-  branchId Int
-  Form     Form[]
-  admin    Admin     @relation(fields: [adminId], references: [id])
-  adminId  Int
-  Payment  Payment[]
-}
-
 model Filler {
   id           Int            @id @default(autoincrement())
   branchId     Int
@@ -143,6 +132,16 @@ model Partner {
   Form         Form[]
   branch       Branch    @relation(fields: [branchId], references: [id])
   Payment      Payment[]
+}
+
+model Broker {
+  id       Int       @id @default(autoincrement())
+  branch   Branch    @relation(fields: [branchId], references: [id])
+  branchId Int
+  Form     Form[]
+  admin    Admin     @relation(fields: [adminId], references: [id])
+  adminId  Int
+  Payment  Payment[]
 }
 
 model FormAssigned {
