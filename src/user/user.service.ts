@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UserType } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -90,7 +94,7 @@ export class UserService {
   }
   async findAll(params?: GetAllUsersDto): Promise<{
     message: string;
-    data: User[];
+    data: UserWithoutPassword[];
   }> {
     const { skip = 0, take = 10, cursor, where, orderBy } = params || {};
 
@@ -100,6 +104,17 @@ export class UserService {
       cursor,
       where,
       orderBy,
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        userType: true,
+        firstName: true,
+        lastName: true,
+        username: true,
+        phoneNumber: true,
+        password: false,
+      },
     });
 
     return {
@@ -108,8 +123,31 @@ export class UserService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number): Promise<{
+    message: string;
+    data: UserWithoutPassword;
+  }> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        userType: true,
+        firstName: true,
+        lastName: true,
+        username: true,
+        phoneNumber: true,
+        password: false,
+      },
+    });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return {
+      message: 'User retrieved Successfully',
+      data: user,
+    };
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

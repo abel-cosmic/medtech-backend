@@ -83,11 +83,14 @@ export class UserController {
   @Get()
   findAll(@Query() params?: GetAllUsersDto): Promise<{
     message: string;
-    data: User[];
+    data: UserWithoutPassword[];
   }> {
     return this.userService.findAll(params);
   }
 
+  @UseGuards(UserTypeGuard)
+  @UserType('SUPERADMIN', 'ADMIN')
+  @UsePipes(new ValidationPipe())
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);

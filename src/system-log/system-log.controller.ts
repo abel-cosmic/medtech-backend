@@ -42,6 +42,9 @@ export class SystemLogController {
     return this.systemLogService.findAll(params);
   }
 
+  @UseGuards(UserTypeGuard)
+  @UserType('SUPERADMIN')
+  @UsePipes(new ValidationPipe())
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.systemLogService.findOne(+id);
