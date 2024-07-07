@@ -10,19 +10,19 @@ export class SystemLogService {
   constructor(private prisma: PrismaService) {}
   async create(
     data: CreateSystemLogDto,
-  ): Promise<{ message: string; systemLog: SystemLog }> {
+  ): Promise<{ message: string; data: SystemLog }> {
     const newSystemLog = await this.prisma.systemLog.create({
       data,
     });
     return {
       message: 'SystemLog created successfully',
-      systemLog: newSystemLog,
+      data: newSystemLog,
     };
   }
 
   async findAll(
     params?: GetAllSystemLogsDto,
-  ): Promise<{ message: string; systemLog: SystemLog[] }> {
+  ): Promise<{ message: string; data: SystemLog[] }> {
     const { skip = 0, take = 10, cursor, where, orderBy } = params || {};
 
     const systemLogs = await this.prisma.systemLog.findMany({
@@ -35,12 +35,10 @@ export class SystemLogService {
 
     return {
       message: 'SystemLogs retrieved successfully',
-      systemLog: systemLogs,
+      data: systemLogs,
     };
   }
-  async findOne(
-    id: number,
-  ): Promise<{ message: string; systemLog: SystemLog }> {
+  async findOne(id: number): Promise<{ message: string; data: SystemLog }> {
     const systemLog = await this.prisma.systemLog.findUnique({
       where: { id },
     });
@@ -50,21 +48,21 @@ export class SystemLogService {
 
     return {
       message: 'SystemLog retrieved successfully',
-      systemLog: systemLog,
+      data: systemLog,
     };
   }
 
   async update(
     id: number,
     updateSystemLogDto: UpdateSystemLogDto,
-  ): Promise<{ message: string; systemLog: SystemLog }> {
+  ): Promise<{ message: string; data: SystemLog }> {
     const updatedSystemLog = await this.prisma.systemLog.update({
       where: { id },
       data: updateSystemLogDto,
     });
     return {
       message: 'SystemLog updated successfully',
-      systemLog: updatedSystemLog,
+      data: updatedSystemLog,
     };
   }
 

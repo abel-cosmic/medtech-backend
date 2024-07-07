@@ -37,7 +37,7 @@ export class SystemLogController {
   @Get()
   findAll(@Query() params?: GetAllSystemLogsDto): Promise<{
     message: string;
-    systemLog: SystemLog[];
+    data: SystemLog[];
   }> {
     return this.systemLogService.findAll(params);
   }
