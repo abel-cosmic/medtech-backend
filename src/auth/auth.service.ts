@@ -33,6 +33,7 @@ export class AuthService {
       id: user.id,
       userType: user.userType,
     };
+    console.log('payload', payload);
     return {
       user,
       token: this.jtwService.sign(payload),

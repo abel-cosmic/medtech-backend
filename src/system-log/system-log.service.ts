@@ -52,20 +52,6 @@ export class SystemLogService {
     };
   }
 
-  async update(
-    id: number,
-    updateSystemLogDto: UpdateSystemLogDto,
-  ): Promise<{ message: string; data: SystemLog }> {
-    const updatedSystemLog = await this.prisma.systemLog.update({
-      where: { id },
-      data: updateSystemLogDto,
-    });
-    return {
-      message: 'SystemLog updated successfully',
-      data: updatedSystemLog,
-    };
-  }
-
   async remove(id: number): Promise<{ message: string }> {
     const deletedSystemLog = await this.prisma.systemLog.findUnique({
       where: { id },

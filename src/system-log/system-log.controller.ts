@@ -50,19 +50,8 @@ export class SystemLogController {
     return this.systemLogService.findOne(+id);
   }
 
-  @UseGuards(UserTypeGuard)
-  @UserType('SUPERADMIN')
-  @Patch(':id')
-  @UsePipes(new ValidationPipe())
-  update(
-    @Param('id') id: string,
-    @Body() updateSystemLogDto: UpdateSystemLogDto,
-  ) {
-    return this.systemLogService.update(+id, updateSystemLogDto);
-  }
-
-  @UseGuards(UserTypeGuard)
-  @UserType('SUPERADMIN')
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
   @UsePipes(new ValidationPipe())
   @Delete(':id')
   remove(@Param('id') id: string) {
