@@ -5,10 +5,13 @@ import { LocalStrategy } from './local.strategy';
 import { SessionSerializer } from './session.serializer';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
-import {PrismaModule} from '@/prisma/prisma.module';
+import { PrismaModule } from '@/prisma/prisma.module';
+import { UserModule } from '@/user/user.module';
+import { UserService } from '@/user/user.service';
 
 @Module({
   imports: [
+    UserModule,
     PassportModule.register({ session: true }),
     PrismaModule,
     JwtModule.register({
@@ -17,6 +20,13 @@ import {PrismaModule} from '@/prisma/prisma.module';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, SessionSerializer, JwtService],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    SessionSerializer,
+    JwtService,
+    UserService,
+  ],
+  exports: [UserService],
 })
 export class AuthModule {}
