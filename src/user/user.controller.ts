@@ -8,13 +8,17 @@ import {
   Delete,
   ValidationPipe,
   UsePipes,
+  UseGuards,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthService } from '@/auth/auth.service';
 import { User } from '@prisma/client';
+import { AuthPayloadDto } from '@/auth/dto/auth.dto';
+import { LocalAuthGuard } from '@/auth/local.auth.guard';
 
 type UserWithoutPassword = Omit<User, 'password'>;
 @Controller('user')
@@ -46,6 +50,20 @@ export class UserController {
       }
       throw error;
     }
+  }
+
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  @UsePipes(new ValidationPipe())
+  async login(@Body() data: AuthPayloadDto) {
+    const user = await this.authService.validateUser(
+      data.username,
+      data.password,
+    );
+    if (!user) {
+      throw new NotFoundException('Invalid login credentials');
+    }
+    return this.authService.login(user);
   }
 
   @Get()

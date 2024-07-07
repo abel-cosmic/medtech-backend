@@ -6,18 +6,21 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { ROLES_KEY } from './roles.decorator';
+import { USERTYPE_KEY } from './user-type.decorator';
 
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class UserTypeGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private jwtService: JwtService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const roles = this.reflector.get<string[]>(ROLES_KEY, context.getHandler());
-    if (!roles) {
+    const userTypes = this.reflector.get<string[]>(
+      USERTYPE_KEY,
+      context.getHandler(),
+    );
+    if (!userTypes) {
       return true;
     }
     const request = context.switchToHttp().getRequest();
@@ -28,12 +31,12 @@ export class RolesGuard implements CanActivate {
     }
 
     const decoded = this.jwtService.verify(token);
-    const userRole = decoded.role;
+    const userType = decoded.userType;
 
-    if (roles.includes(userRole)) {
+    if (userTypes.includes(userType)) {
       return true;
     }
 
-    throw new UnauthorizedException('You do not have the required role');
+    throw new UnauthorizedException('You do not have the required UserType');
   }
 }

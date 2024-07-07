@@ -11,8 +11,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const options = new DocumentBuilder()
-    .setTitle('Fenote Teguhan')
-    .setDescription('Attendance Management system for church')
+    .setTitle('MEDTECH API ENDPOINTS')
+    .setDescription('User  Management system for MEDTECH TECHNOLOGIES')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

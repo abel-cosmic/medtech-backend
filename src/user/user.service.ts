@@ -51,7 +51,13 @@ export class UserService {
       data: newUser,
     };
   }
-
+  async getUserByUsername(username: string): Promise<User> {
+    return this.prisma.user.findUnique({
+      where: {
+        username,
+      },
+    });
+  }
   findAll() {
     return `This action returns all user`;
   }
