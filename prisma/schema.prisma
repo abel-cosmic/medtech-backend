@@ -1,0 +1,233 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// prisma/schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // uncomment next line if you use Prisma <5.10
+  // directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model SystemLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  action    String   @unique
+  details   String?
+  timestamp DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  userType    UserType
+  firstName   String
+  lastName    String
+  username    String        @unique
+  phoneNumber String        @unique
+  password    String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now())
+  SuperAdmin  SuperAdmin[]
+  Admin       Admin[]
+  DataEncoder DataEncoder[]
+  SystemLog   SystemLog[]
+}
+
+model Broker {
+  id Int @id @default(autoincrement())
+
+  branch   Branch    @relation(fields: [branchId], references: [id])
+  branchId Int
+  Form     Form[]
+  admin    Admin     @relation(fields: [adminId], references: [id])
+  adminId  Int
+  Payment  Payment[]
+}
+
+model Filler {
+  id           Int            @id @default(autoincrement())
+  branchId     Int
+  fillerCode   String         @unique
+  pricePerForm Int
+  firstName    String
+  lastName     String
+  phoneNumber  String         @unique
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @default(now())
+  FormAssigned FormAssigned[]
+  Payment      Payment[]
+}
+
+model Admin {
+  id           Int            @id @default(autoincrement())
+  userId       Int
+  branchId     Int
+  Broker       Broker[]
+  FormAssigned FormAssigned[]
+  Payment      Payment[]
+  user         User           @relation(fields: [userId], references: [id])
+}
+
+model SuperAdmin {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+}
+
+model DataEncoder {
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  branchId Int
+  Form     Form[]
+  branch   Branch @relation(fields: [branchId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+model Branch {
+  id             Int           @id @default(autoincrement())
+  branchName     String
+  branchLocation String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @default(now())
+  broker         Broker[]
+  form           Form[]
+  Partner        Partner[]
+  DataEncoder    DataEncoder[]
+  Payment        Payment[]
+}
+
+model Payment {
+  id              Int           @id @default(autoincrement())
+  adminId         Int
+  branchId        Int
+  fillerId        Int
+  partnerId       Int
+  brokerId        Int
+  name            String
+  description     String?
+  madeBy          String
+  madeTo          String
+  accountNumber   String
+  referenceNumber String
+  amount          Int
+  type            ValueType
+  method          PaymentMethod
+  startDate       DateTime
+  endDate         DateTime
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @default(now())
+  filler          Filler        @relation(fields: [fillerId], references: [id])
+  branch          Branch        @relation(fields: [branchId], references: [id])
+  broker          Broker        @relation(fields: [brokerId], references: [id])
+  admin           Admin         @relation(fields: [adminId], references: [id])
+  partner         Partner       @relation(fields: [partnerId], references: [id])
+}
+
+model Partner {
+  id           Int       @id @default(autoincrement())
+  branchId     Int
+  partnerName  String
+  pricePerForm Int
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @default(now())
+  Form         Form[]
+  branch       Branch    @relation(fields: [branchId], references: [id])
+  Payment      Payment[]
+}
+
+model FormAssigned {
+  id                Int        @id @default(autoincrement())
+  formId            Int
+  fillerId          Int
+  adminId           Int
+  status            StatusType
+  applicationNumber String
+  paymentStatus     Boolean
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @default(now())
+  filler            Filler     @relation(fields: [fillerId], references: [id])
+  admin             Admin      @relation(fields: [adminId], references: [id])
+  form              Form       @relation(fields: [formId], references: [id])
+}
+
+model Form {
+  id               Int            @id @default(autoincrement())
+  branchId         Int
+  dataEncoderId    Int
+  brokerId         Int
+  partnerId        Int
+  regionId         Int
+  firstName        String
+  middleName       String
+  lastName         String
+  firstNameAm      String
+  middleNameAm     String
+  lastNameAm       String
+  birthDate        DateTime
+  birthPlace       String
+  city             String
+  birthCertificate String
+  identification   String
+  status           FormStatus
+  totalPrice       Int
+  brokerCost       Int
+  remainingPrice   Int
+  issueDate        DateTime
+  submissionDate   DateTime
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @default(now())
+  branch           Branch         @relation(fields: [branchId], references: [id])
+  dataEncoder      DataEncoder    @relation(fields: [dataEncoderId], references: [id])
+  region           Region         @relation(fields: [regionId], references: [id])
+  partner          Partner        @relation(fields: [partnerId], references: [id])
+  broker           Broker         @relation(fields: [brokerId], references: [id])
+  FormAssigned     FormAssigned[]
+}
+
+model Region {
+  id         Int      @id @default(autoincrement())
+  regionName String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+  Form       Form[]
+}
+
+enum FormStatus {
+  NOTFILLED
+  ASSIGNED
+  FILLED
+  PAID
+}
+
+enum ValueType {
+  INCREASE
+  DECREASE
+}
+
+enum PaymentMethod {
+  CASH
+  BANKING
+}
+
+enum UserType {
+  ADMIN
+  SUPERADMIN
+  DATAENCODER
+}
+
+enum StatusType {
+  NOTFILLED
+  FILLED
+  PAYMENTPENDING
+  PAID
+}
