@@ -24,10 +24,13 @@ export class SystemLogService {
     params?: GetAllSystemLogsDto,
   ): Promise<{ message: string; data: SystemLog[] }> {
     const { skip = 0, take = 10, cursor, where, orderBy } = params || {};
+    // Parse skip and take as integers
+    const skipInt = parseInt(skip as string, 10) || 0 || 0;
+    const takeInt = parseInt(take as string, 10) || 10 || 0;
 
     const systemLogs = await this.prisma.systemLog.findMany({
-      skip,
-      take,
+      skip: skipInt,
+      take: takeInt,
       cursor,
       where,
       orderBy,
