@@ -150,11 +150,68 @@ export class UserService {
     };
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(
+    id: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<{
+    message: string;
+    data: UserWithoutPassword;
+  }> {
+    // Fetch the existing user
+    const existingUser = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!existingUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    // Check if the user is an admin or a data encoder
+    const [existingAdmin, existingDataEncoder] = await Promise.all([
+      this.prisma.admin.findFirst({
+        where: { userId: id },
+      }),
+      this.prisma.dataEncoder.findFirst({
+        where: { userId: id },
+      }),
+    ]);
+
+    // Update user details
+    const updatedUser = await this.prisma.user.update({
+      where: { id },
+      data: updateUserDto,
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        userType: true,
+        firstName: true,
+        lastName: true,
+        username: true,
+        phoneNumber: true,
+        // Explicitly excluding password
+        password: false,
+      },
+    });
+
+    return {
+      message: 'User updated successfully',
+      data: updatedUser,
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number): Promise<{ message: string }> {
+    const deletedUser = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    if (!deletedUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    await this.prisma.user.delete({
+      where: { id },
+    });
+    return {
+      message: 'User deleted successfully',
+    };
   }
 }
