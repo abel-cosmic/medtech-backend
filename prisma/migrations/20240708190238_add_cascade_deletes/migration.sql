@@ -1,16 +1,16 @@
 /*
   Warnings:
 
-  - The primary key for the `User` table will be changed. If it partially fails, the table could be left without primary key constraint.
   - You are about to drop the column `email` on the `User` table. All the data in the column will be lost.
-  - You are about to drop the column `id` on the `User` table. All the data in the column will be lost.
   - You are about to drop the column `name` on the `User` table. All the data in the column will be lost.
+  - A unique constraint covering the columns `[username]` on the table `User` will be added. If there are existing duplicate values, this will fail.
   - A unique constraint covering the columns `[phoneNumber]` on the table `User` will be added. If there are existing duplicate values, this will fail.
   - Added the required column `firstName` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `lastName` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `password` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `phoneNumber` to the `User` table without a default value. This is not possible if the table is not empty.
   - Added the required column `userType` to the `User` table without a default value. This is not possible if the table is not empty.
+  - Added the required column `username` to the `User` table without a default value. This is not possible if the table is not empty.
 
 */
 -- CreateEnum
@@ -32,9 +32,7 @@ CREATE TYPE "StatusType" AS ENUM ('NOTFILLED', 'FILLED', 'PAYMENTPENDING', 'PAID
 DROP INDEX "User_email_key";
 
 -- AlterTable
-ALTER TABLE "User" DROP CONSTRAINT "User_pkey",
-DROP COLUMN "email",
-DROP COLUMN "id",
+ALTER TABLE "User" DROP COLUMN "email",
 DROP COLUMN "name",
 ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 ADD COLUMN     "firstName" TEXT NOT NULL,
@@ -42,36 +40,25 @@ ADD COLUMN     "lastName" TEXT NOT NULL,
 ADD COLUMN     "password" TEXT NOT NULL,
 ADD COLUMN     "phoneNumber" TEXT NOT NULL,
 ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "userId" SERIAL NOT NULL,
 ADD COLUMN     "userType" "UserType" NOT NULL,
-ADD CONSTRAINT "User_pkey" PRIMARY KEY ("userId");
+ADD COLUMN     "username" TEXT NOT NULL;
 
 -- CreateTable
 CREATE TABLE "SystemLog" (
-    "logId" SERIAL NOT NULL,
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
     "action" TEXT NOT NULL,
     "details" TEXT,
     "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "SystemLog_pkey" PRIMARY KEY ("logId")
-);
-
--- CreateTable
-CREATE TABLE "Broker" (
-    "brokerId" SERIAL NOT NULL,
-    "branchId" INTEGER NOT NULL,
-    "firstName" TEXT NOT NULL,
-    "lastName" TEXT NOT NULL,
-    "phoneNumber" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Broker_pkey" PRIMARY KEY ("brokerId")
+    CONSTRAINT "SystemLog_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Filler" (
-    "fillerId" SERIAL NOT NULL,
+    "id" SERIAL NOT NULL,
     "branchId" INTEGER NOT NULL,
     "fillerCode" TEXT NOT NULL,
     "pricePerForm" INTEGER NOT NULL,
@@ -81,67 +68,49 @@ CREATE TABLE "Filler" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Filler_pkey" PRIMARY KEY ("fillerId")
+    CONSTRAINT "Filler_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Admin" (
-    "adminId" SERIAL NOT NULL,
+    "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "branchId" INTEGER NOT NULL,
-    "firstName" TEXT NOT NULL,
-    "lastName" TEXT NOT NULL,
-    "phoneNumber" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Admin_pkey" PRIMARY KEY ("adminId")
+    CONSTRAINT "Admin_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "SuperAdmin" (
-    "superAdminId" SERIAL NOT NULL,
+    "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
-    "firstName" TEXT NOT NULL,
-    "lastName" TEXT NOT NULL,
-    "phoneNumber" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "SuperAdmin_pkey" PRIMARY KEY ("superAdminId")
+    CONSTRAINT "SuperAdmin_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "DataEncoder" (
-    "dataEncoderId" SERIAL NOT NULL,
+    "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "branchId" INTEGER NOT NULL,
-    "firstName" TEXT NOT NULL,
-    "lastName" TEXT NOT NULL,
-    "phoneNumber" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "DataEncoder_pkey" PRIMARY KEY ("dataEncoderId")
+    CONSTRAINT "DataEncoder_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Branch" (
-    "branchId" SERIAL NOT NULL,
+    "id" SERIAL NOT NULL,
     "branchName" TEXT NOT NULL,
     "branchLocation" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Branch_pkey" PRIMARY KEY ("branchId")
+    CONSTRAINT "Branch_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Payment" (
-    "paymentId" SERIAL NOT NULL,
+    "id" SERIAL NOT NULL,
     "adminId" INTEGER NOT NULL,
     "branchId" INTEGER NOT NULL,
     "fillerId" INTEGER NOT NULL,
@@ -161,24 +130,33 @@ CREATE TABLE "Payment" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Payment_pkey" PRIMARY KEY ("paymentId")
+    CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Partner" (
-    "partnerId" SERIAL NOT NULL,
+    "id" SERIAL NOT NULL,
     "branchId" INTEGER NOT NULL,
     "partnerName" TEXT NOT NULL,
     "pricePerForm" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Partner_pkey" PRIMARY KEY ("partnerId")
+    CONSTRAINT "Partner_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Broker" (
+    "id" SERIAL NOT NULL,
+    "branchId" INTEGER NOT NULL,
+    "adminId" INTEGER NOT NULL,
+
+    CONSTRAINT "Broker_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "FormAssigned" (
-    "formAssignedId" SERIAL NOT NULL,
+    "id" SERIAL NOT NULL,
     "formId" INTEGER NOT NULL,
     "fillerId" INTEGER NOT NULL,
     "adminId" INTEGER NOT NULL,
@@ -188,12 +166,12 @@ CREATE TABLE "FormAssigned" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "FormAssigned_pkey" PRIMARY KEY ("formAssignedId")
+    CONSTRAINT "FormAssigned_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Form" (
-    "formId" SERIAL NOT NULL,
+    "id" SERIAL NOT NULL,
     "branchId" INTEGER NOT NULL,
     "dataEncoderId" INTEGER NOT NULL,
     "brokerId" INTEGER NOT NULL,
@@ -219,24 +197,21 @@ CREATE TABLE "Form" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Form_pkey" PRIMARY KEY ("formId")
+    CONSTRAINT "Form_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Region" (
-    "regionId" SERIAL NOT NULL,
+    "id" SERIAL NOT NULL,
     "regionName" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Region_pkey" PRIMARY KEY ("regionId")
+    CONSTRAINT "Region_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "SystemLog_action_key" ON "SystemLog"("action");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Broker_phoneNumber_key" ON "Broker"("phoneNumber");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Filler_fillerCode_key" ON "Filler"("fillerCode");
@@ -245,13 +220,70 @@ CREATE UNIQUE INDEX "Filler_fillerCode_key" ON "Filler"("fillerCode");
 CREATE UNIQUE INDEX "Filler_phoneNumber_key" ON "Filler"("phoneNumber");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Admin_phoneNumber_key" ON "Admin"("phoneNumber");
-
--- CreateIndex
-CREATE UNIQUE INDEX "SuperAdmin_phoneNumber_key" ON "SuperAdmin"("phoneNumber");
-
--- CreateIndex
-CREATE UNIQUE INDEX "DataEncoder_phoneNumber_key" ON "DataEncoder"("phoneNumber");
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_phoneNumber_key" ON "User"("phoneNumber");
+
+-- AddForeignKey
+ALTER TABLE "SystemLog" ADD CONSTRAINT "SystemLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Admin" ADD CONSTRAINT "Admin_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SuperAdmin" ADD CONSTRAINT "SuperAdmin_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DataEncoder" ADD CONSTRAINT "DataEncoder_branchId_fkey" FOREIGN KEY ("branchId") REFERENCES "Branch"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DataEncoder" ADD CONSTRAINT "DataEncoder_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_fillerId_fkey" FOREIGN KEY ("fillerId") REFERENCES "Filler"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_branchId_fkey" FOREIGN KEY ("branchId") REFERENCES "Branch"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_brokerId_fkey" FOREIGN KEY ("brokerId") REFERENCES "Broker"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "Admin"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_partnerId_fkey" FOREIGN KEY ("partnerId") REFERENCES "Partner"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Partner" ADD CONSTRAINT "Partner_branchId_fkey" FOREIGN KEY ("branchId") REFERENCES "Branch"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Broker" ADD CONSTRAINT "Broker_branchId_fkey" FOREIGN KEY ("branchId") REFERENCES "Branch"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Broker" ADD CONSTRAINT "Broker_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "Admin"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "FormAssigned" ADD CONSTRAINT "FormAssigned_fillerId_fkey" FOREIGN KEY ("fillerId") REFERENCES "Filler"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "FormAssigned" ADD CONSTRAINT "FormAssigned_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "Admin"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "FormAssigned" ADD CONSTRAINT "FormAssigned_formId_fkey" FOREIGN KEY ("formId") REFERENCES "Form"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Form" ADD CONSTRAINT "Form_branchId_fkey" FOREIGN KEY ("branchId") REFERENCES "Branch"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Form" ADD CONSTRAINT "Form_dataEncoderId_fkey" FOREIGN KEY ("dataEncoderId") REFERENCES "DataEncoder"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Form" ADD CONSTRAINT "Form_regionId_fkey" FOREIGN KEY ("regionId") REFERENCES "Region"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Form" ADD CONSTRAINT "Form_partnerId_fkey" FOREIGN KEY ("partnerId") REFERENCES "Partner"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Form" ADD CONSTRAINT "Form_brokerId_fkey" FOREIGN KEY ("brokerId") REFERENCES "Broker"("id") ON DELETE CASCADE ON UPDATE CASCADE;

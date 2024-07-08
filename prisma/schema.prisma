@@ -1,19 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
-// prisma/schema.prisma
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  // uncomment next line if you use Prisma <5.10
-  // directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 model SystemLog {
@@ -24,7 +15,7 @@ model SystemLog {
   timestamp DateTime @default(now())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
@@ -64,13 +55,13 @@ model Admin {
   Broker       Broker[]
   FormAssigned FormAssigned[]
   Payment      Payment[]
-  user         User           @relation(fields: [userId], references: [id])
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model SuperAdmin {
   id     Int  @id @default(autoincrement())
   userId Int
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model DataEncoder {
@@ -78,8 +69,8 @@ model DataEncoder {
   userId   Int
   branchId Int
   Form     Form[]
-  branch   Branch @relation(fields: [branchId], references: [id])
-  user     User   @relation(fields: [userId], references: [id])
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Branch {
@@ -115,11 +106,11 @@ model Payment {
   endDate         DateTime
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @default(now())
-  filler          Filler        @relation(fields: [fillerId], references: [id])
-  branch          Branch        @relation(fields: [branchId], references: [id])
-  broker          Broker        @relation(fields: [brokerId], references: [id])
-  admin           Admin         @relation(fields: [adminId], references: [id])
-  partner         Partner       @relation(fields: [partnerId], references: [id])
+  filler          Filler        @relation(fields: [fillerId], references: [id], onDelete: Cascade)
+  branch          Branch        @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  broker          Broker        @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+  admin           Admin         @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  partner         Partner       @relation(fields: [partnerId], references: [id], onDelete: Cascade)
 }
 
 model Partner {
@@ -130,16 +121,16 @@ model Partner {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @default(now())
   Form         Form[]
-  branch       Branch    @relation(fields: [branchId], references: [id])
+  branch       Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
   Payment      Payment[]
 }
 
 model Broker {
   id       Int       @id @default(autoincrement())
-  branch   Branch    @relation(fields: [branchId], references: [id])
+  branch   Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
   branchId Int
   Form     Form[]
-  admin    Admin     @relation(fields: [adminId], references: [id])
+  admin    Admin     @relation(fields: [adminId], references: [id], onDelete: Cascade)
   adminId  Int
   Payment  Payment[]
 }
@@ -154,9 +145,9 @@ model FormAssigned {
   paymentStatus     Boolean
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @default(now())
-  filler            Filler     @relation(fields: [fillerId], references: [id])
-  admin             Admin      @relation(fields: [adminId], references: [id])
-  form              Form       @relation(fields: [formId], references: [id])
+  filler            Filler     @relation(fields: [fillerId], references: [id], onDelete: Cascade)
+  admin             Admin      @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  form              Form       @relation(fields: [formId], references: [id], onDelete: Cascade)
 }
 
 model Form {
@@ -185,11 +176,11 @@ model Form {
   submissionDate   DateTime
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @default(now())
-  branch           Branch         @relation(fields: [branchId], references: [id])
-  dataEncoder      DataEncoder    @relation(fields: [dataEncoderId], references: [id])
-  region           Region         @relation(fields: [regionId], references: [id])
-  partner          Partner        @relation(fields: [partnerId], references: [id])
-  broker           Broker         @relation(fields: [brokerId], references: [id])
+  branch           Branch         @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  dataEncoder      DataEncoder    @relation(fields: [dataEncoderId], references: [id], onDelete: Cascade)
+  region           Region         @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  partner          Partner        @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  broker           Broker         @relation(fields: [brokerId], references: [id], onDelete: Cascade)
   FormAssigned     FormAssigned[]
 }
 

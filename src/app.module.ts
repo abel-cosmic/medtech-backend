@@ -8,6 +8,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { BranchModule } from './branch/branch.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { BranchModule } from './branch/branch.module';
     UserModule,
     AuthModule,
     BranchModule,
+    AdminModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService],

@@ -189,7 +189,6 @@ export class UserService {
         lastName: true,
         username: true,
         phoneNumber: true,
-        // Explicitly excluding password
         password: false,
       },
     });
@@ -207,9 +206,17 @@ export class UserService {
     if (!deletedUser) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
+    await this.prisma.superAdmin.deleteMany({
+      where: { userId: id },
+    });
+    await this.prisma.admin.deleteMany({
+      where: { userId: id },
+    });
+
     await this.prisma.user.delete({
       where: { id },
     });
+
     return {
       message: 'User deleted successfully',
     };
