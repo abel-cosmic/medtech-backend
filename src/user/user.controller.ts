@@ -78,8 +78,8 @@ export class UserController {
     return this.authService.login(user);
   }
 
-  @UseGuards(UserTypeGuard)
-  @UserType('SUPERADMIN', 'ADMIN')
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN', 'ADMIN')
   @Get()
   findAll(@Query() params?: GetAllUsersDto): Promise<{
     message: string;
@@ -88,8 +88,8 @@ export class UserController {
     return this.userService.findAll(params);
   }
 
-  @UseGuards(UserTypeGuard)
-  @UserType('SUPERADMIN', 'ADMIN')
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN', 'ADMIN')
   @UsePipes(new ValidationPipe())
   @Get(':id')
   findOne(@Param('id') id: string) {

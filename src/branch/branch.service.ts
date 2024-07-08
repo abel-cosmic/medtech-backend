@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { UpdateBranchDto } from './dto/update-branch.dto';
 import { PrismaService } from '@/prisma/prisma.service';
@@ -40,15 +40,50 @@ export class BranchService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} branch`;
+  async findOne(id: number): Promise<{ message: string; data: Branch }> {
+    const existingBranch = await this.prisma.branch.findUnique({
+      where: { id },
+    });
+    if (!existingBranch) {
+      throw new NotFoundException(`Branch with ID ${id} not found`);
+    }
+    return {
+      message: 'Branch retrieved successfully',
+      data: existingBranch,
+    };
   }
 
-  update(id: number, updateBranchDto: UpdateBranchDto) {
-    return `This action updates a #${id} branch`;
+  async update(
+    id: number,
+    data: UpdateBranchDto,
+  ): Promise<{ message: string; data: Branch }> {
+    const updatedBranch = await this.prisma.branch.update({
+      where: { id },
+      data,
+    });
+
+    if (!updatedBranch) {
+      throw new NotFoundException(`Plan with ID ${id} not found`);
+    }
+
+    return {
+      message: `Branch with ID ${id} updated successfully`,
+      data: updatedBranch,
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} branch`;
+  async remove(id: number): Promise<{ message: string }> {
+    const deletedBranch = await this.prisma.branch.findUnique({
+      where: { id },
+    });
+    if (!deletedBranch) {
+      throw new NotFoundException(`Branch with ID ${id} not found`);
+    }
+    await this.prisma.branch.delete({
+      where: { id },
+    });
+    return {
+      message: 'Branch deleted successfully',
+    };
   }
 }
