@@ -20,8 +20,8 @@ import { AuthService } from '@/auth/auth.service';
 import { User } from '@prisma/client';
 import { AuthPayloadDto } from '@/auth/dto/auth.dto';
 import { LocalAuthGuard } from '@/auth/local.auth.guard';
-import { UserTypeGuard } from '@/auth/user-type.guard';
-import { UserType } from '@/auth/user-type.decorator';
+// import { UserTypeGuard } from '@/auth/user-type.guard';
+// import { UserType } from '@/auth/user-type.decorator';
 import { GetAllUsersDto } from './dto/get-all-user.dto';
 
 type UserWithoutPassword = Omit<User, 'password'>;

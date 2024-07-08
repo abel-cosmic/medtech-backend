@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class GetAllSystemLogsDto {
+export class GetAllAdminsDto {
   @IsOptional()
   @IsString()
   skip?: string;
@@ -11,11 +11,11 @@ export class GetAllSystemLogsDto {
   take?: string;
 
   @IsOptional()
-  cursor?: Prisma.SystemLogWhereUniqueInput;
+  cursor?: Prisma.AdminWhereUniqueInput;
 
   @IsOptional()
-  where?: Prisma.SystemLogWhereInput;
+  where?: Prisma.AdminWhereInput;
 
   @IsOptional()
-  orderBy?: Prisma.SystemLogOrderByWithRelationInput;
+  orderBy?: Prisma.AdminOrderByWithRelationInput;
 }

@@ -9,10 +9,11 @@ import {
   // UseGuards,
   UsePipes,
   ValidationPipe,
+  Query,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
+import { Admin } from '@prisma/client';
+import { GetAllAdminsDto } from './dto/get-all-admin.dto';
 // import { UserType } from '@/auth/user-type.decorator';
 // import { UserTypeGuard } from '@/auth/user-type.guard';
 
@@ -24,8 +25,11 @@ export class AdminController {
   // @UserType('SUPERADMIN')
   @UsePipes(new ValidationPipe())
   @Get()
-  findAll() {
-    return this.adminService.findAll();
+  findAll(@Query() params?: GetAllAdminsDto): Promise<{
+    message: string;
+    data: Admin[];
+  }> {
+    return this.adminService.findAll(params);
   }
   // @UseGuards(UserTypeGuard)
   // @UserType('SUPERADMIN')
@@ -33,19 +37,5 @@ export class AdminController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.adminService.findOne(+id);
-  }
-  // @UseGuards(UserTypeGuard)
-  // @UserType('SUPERADMIN')
-  @UsePipes(new ValidationPipe())
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
-    return this.adminService.update(+id, updateAdminDto);
-  }
-  // @UseGuards(UserTypeGuard)
-  // @UserType('SUPERADMIN')
-  @UsePipes(new ValidationPipe())
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adminService.remove(+id);
   }
 }

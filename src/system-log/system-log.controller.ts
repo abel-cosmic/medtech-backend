@@ -13,10 +13,10 @@ import {
 } from '@nestjs/common';
 import { SystemLogService } from './system-log.service';
 import { CreateSystemLogDto } from './dto/create-system-log.dto';
-import { UserTypeGuard } from '@/auth/user-type.guard';
+// import { UserTypeGuard } from '@/auth/user-type.guard';
 import { SystemLog } from '@prisma/client';
 import { GetAllSystemLogsDto } from './dto/get-all-system-log.dto';
-import { UserType } from '@/auth/user-type.decorator';
+// import { UserType } from '@/auth/user-type.decorator';
 
 @Controller('system-log')
 export class SystemLogController {

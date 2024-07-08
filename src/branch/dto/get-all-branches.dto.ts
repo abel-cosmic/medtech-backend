@@ -1,14 +1,14 @@
 import { Prisma } from '@prisma/client';
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class GetAllBranchesDto {
   @IsOptional()
-  @IsNumber()
-  skip?: number;
+  @IsString()
+  skip?: string;
 
   @IsOptional()
-  @IsNumber()
-  take?: number;
+  @IsString()
+  take?: string;
 
   @IsOptional()
   cursor?: Prisma.BranchWhereUniqueInput;

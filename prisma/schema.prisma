@@ -10,7 +10,7 @@ datasource db {
 model SystemLog {
   id        Int      @id @default(autoincrement())
   userId    Int
-  action    String   @unique
+  action    String
   details   String?
   timestamp DateTime @default(now())
   createdAt DateTime @default(now())
@@ -52,9 +52,9 @@ model Admin {
   id           Int            @id @default(autoincrement())
   userId       Int
   branchId     Int
-  Broker       Broker[]
-  FormAssigned FormAssigned[]
-  Payment      Payment[]
+  broker       Broker[]
+  formAssigned FormAssigned[]
+  payments     Payment[]
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
