@@ -1,5 +1,4 @@
 import { Injectable, NotAcceptableException } from '@nestjs/common';
-
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '@/user/user.service';
@@ -9,15 +8,16 @@ import { User } from '@prisma/client';
 export class AuthService {
   constructor(
     private readonly userService: UserService,
-    private readonly jtwService: JwtService,
+    private readonly jwtService: JwtService,
   ) {}
+
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.userService.getUserByUsername(username);
-    const passwordValid = await bcrypt.compare(password, user.password);
     if (!user) {
-      throw new NotAcceptableException('could not find the User');
+      throw new NotAcceptableException('Could not find the user');
     }
-    if (user && passwordValid) {
+    const passwordValid = await bcrypt.compare(password, user.password);
+    if (passwordValid) {
       return {
         userType: user.userType,
         id: user.id,
@@ -36,7 +36,7 @@ export class AuthService {
     console.log('payload', payload);
     return {
       user,
-      token: this.jtwService.sign(payload),
+      token: this.jwtService.sign(payload),
     };
   }
 }
