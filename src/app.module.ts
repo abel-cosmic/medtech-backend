@@ -9,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { BranchModule } from './branch/branch.module';
 import { AdminModule } from './admin/admin.module';
+import { DataEncoderModule } from './data-encoder/data-encoder.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AdminModule } from './admin/admin.module';
     AuthModule,
     BranchModule,
     AdminModule,
+    DataEncoderModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService],

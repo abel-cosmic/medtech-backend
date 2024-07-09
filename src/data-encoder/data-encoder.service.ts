@@ -1,21 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { GetAllAdminsDto } from './dto/get-all-admin.dto';
-import { Admin } from '@prisma/client';
 import { PrismaService } from '@/prisma/prisma.service';
+import { GetAllDataEncodersDto } from './dto/get-all-data-encoder.dto';
+import { DataEncoder } from '@prisma/client';
 
 @Injectable()
-export class AdminService {
+export class DataEncoderService {
   constructor(private prisma: PrismaService) {}
 
   async findAll(
-    params?: GetAllAdminsDto,
-  ): Promise<{ message: string; data: Admin[] }> {
+    params?: GetAllDataEncodersDto,
+  ): Promise<{ message: string; data: DataEncoder[] }> {
     const { skip = 0, take = 10, cursor, where, orderBy } = params || {};
-    // Parse skip and take as integers
+
     const skipInt = parseInt(skip as string, 10) || 0 || 0;
     const takeInt = parseInt(take as string, 10) || 10 || 0;
 
-    const admins = await this.prisma.admin.findMany({
+    const dataEncoders = await this.prisma.dataEncoder.findMany({
       skip: skipInt,
       take: takeInt,
       cursor,
@@ -25,23 +25,23 @@ export class AdminService {
     });
 
     return {
-      message: 'Admins retrieved successfully',
-      data: admins,
+      message: 'DataEncoders retrieved successfully',
+      data: dataEncoders,
     };
   }
 
-  async findOne(id: number): Promise<{ message: string; data: Admin }> {
-    const admin = await this.prisma.admin.findUnique({
+  async findOne(id: number): Promise<{ message: string; data: DataEncoder }> {
+    const dataEncoder = await this.prisma.dataEncoder.findUnique({
       where: { id },
       include: { user: true },
     });
-    if (!admin) {
+    if (!dataEncoder) {
       throw new NotFoundException(`Admin with ID ${id} not found`);
     }
 
     return {
-      message: 'Admin retrieved successfully',
-      data: admin,
+      message: 'DataEncoder retrieved successfully',
+      data: dataEncoder,
     };
   }
 }
