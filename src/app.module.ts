@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { DataEncoderModule } from './data-encoder/data-encoder.module';
 import { SuperAdminModule } from './super-admin/super-admin.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { SuperAdminModule } from './super-admin/super-admin.module';
     AdminModule,
     DataEncoderModule,
     SuperAdminModule,
+    PaymentModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService],
