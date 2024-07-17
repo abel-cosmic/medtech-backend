@@ -34,11 +34,12 @@ export class CreateUserDto {
 
   @IsInt()
   @IsOptional()
-  branchId?: number;
+  pricePerForm?: number;
 }
 // user type enum value here
 export enum UserType {
   SUPERADMIN = 'SUPERADMIN',
+  FILLER = 'FILLER',
   ADMIN = 'ADMIN',
   DATAENCODER = 'DATAENCODER',
 }

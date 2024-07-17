@@ -44,7 +44,7 @@ export class UserController {
       username,
       phoneNumber,
       password,
-      branchId,
+      pricePerForm,
     } = data;
     try {
       return await this.userService.create(
@@ -54,7 +54,7 @@ export class UserController {
         username,
         phoneNumber,
         password,
-        branchId,
+        pricePerForm,
       );
     } catch (error) {
       if (error instanceof BadRequestException) {

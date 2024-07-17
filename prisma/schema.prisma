@@ -19,40 +19,38 @@ model SystemLog {
 }
 
 model User {
-  id          Int           @id @default(autoincrement())
-  userType    UserType
-  firstName   String
-  lastName    String
-  username    String        @unique
-  phoneNumber String        @unique
-  password    String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @default(now())
-  SuperAdmin  SuperAdmin[]
-  Admin       Admin[]
-  DataEncoder DataEncoder[]
-  SystemLog   SystemLog[]
+  id           Int           @id @default(autoincrement())
+  userType     UserType
+  firstName    String
+  lastName     String
+  username     String        @unique
+  phoneNumber  String        @unique
+  password     String
+  fillerCode   String?       @unique
+  pricePerForm Int?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now())
+  SuperAdmin   SuperAdmin[]
+  Admin        Admin[]
+  DataEncoder  DataEncoder[]
+  Filler       Filler[]
+  SystemLog    SystemLog[]
 }
 
 model Filler {
   id           Int            @id @default(autoincrement())
+  userId       Int?
   branchId     Int
   fillerCode   String         @unique
   pricePerForm Int
-  firstName    String
-  lastName     String
-  phoneNumber  String         @unique
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @default(now())
   FormAssigned FormAssigned[]
   Payment      Payment[]
+  User         User?          @relation(fields: [userId], references: [id])
 }
 
 model Admin {
   id           Int            @id @default(autoincrement())
   userId       Int
-  branchId     Int
-  broker       Broker[]
   formAssigned FormAssigned[]
   payments     Payment[]
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -65,34 +63,16 @@ model SuperAdmin {
 }
 
 model DataEncoder {
-  id       Int    @id @default(autoincrement())
-  userId   Int
-  branchId Int
-  Form     Form[]
-  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Branch {
-  id             Int           @id @default(autoincrement())
-  branchName     String
-  branchLocation String
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @default(now())
-  broker         Broker[]
-  form           Form[]
-  Partner        Partner[]
-  DataEncoder    DataEncoder[]
-  Payment        Payment[]
+  id     Int    @id @default(autoincrement())
+  userId Int
+  Form   Form[]
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Payment {
   id              Int           @id @default(autoincrement())
   adminId         Int
-  branchId        Int
   fillerId        Int
-  partnerId       Int
-  brokerId        Int
   name            String
   description     String?
   madeBy          String
@@ -100,39 +80,13 @@ model Payment {
   accountNumber   String
   referenceNumber String
   amount          Int
-  type            ValueType
   method          PaymentMethod
   startDate       DateTime
   endDate         DateTime
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @default(now())
   filler          Filler        @relation(fields: [fillerId], references: [id], onDelete: Cascade)
-  branch          Branch        @relation(fields: [branchId], references: [id], onDelete: Cascade)
-  broker          Broker        @relation(fields: [brokerId], references: [id], onDelete: Cascade)
   admin           Admin         @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  partner         Partner       @relation(fields: [partnerId], references: [id], onDelete: Cascade)
-}
-
-model Partner {
-  id           Int       @id @default(autoincrement())
-  branchId     Int
-  partnerName  String
-  pricePerForm Int
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @default(now())
-  Form         Form[]
-  branch       Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
-  Payment      Payment[]
-}
-
-model Broker {
-  id       Int       @id @default(autoincrement())
-  branch   Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
-  branchId Int
-  Form     Form[]
-  admin    Admin     @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  adminId  Int
-  Payment  Payment[]
 }
 
 model FormAssigned {
@@ -142,7 +96,7 @@ model FormAssigned {
   adminId           Int
   status            StatusType
   applicationNumber String
-  paymentStatus     Boolean
+  filledStatus      Boolean
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @default(now())
   filler            Filler     @relation(fields: [fillerId], references: [id], onDelete: Cascade)
@@ -152,10 +106,7 @@ model FormAssigned {
 
 model Form {
   id               Int            @id @default(autoincrement())
-  branchId         Int
   dataEncoderId    Int
-  brokerId         Int
-  partnerId        Int
   regionId         Int
   firstName        String
   middleName       String
@@ -176,11 +127,8 @@ model Form {
   submissionDate   DateTime
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @default(now())
-  branch           Branch         @relation(fields: [branchId], references: [id], onDelete: Cascade)
   dataEncoder      DataEncoder    @relation(fields: [dataEncoderId], references: [id], onDelete: Cascade)
   region           Region         @relation(fields: [regionId], references: [id], onDelete: Cascade)
-  partner          Partner        @relation(fields: [partnerId], references: [id], onDelete: Cascade)
-  broker           Broker         @relation(fields: [brokerId], references: [id], onDelete: Cascade)
   FormAssigned     FormAssigned[]
 }
 
@@ -199,11 +147,6 @@ enum FormStatus {
   PAID
 }
 
-enum ValueType {
-  INCREASE
-  DECREASE
-}
-
 enum PaymentMethod {
   CASH
   BANKING
@@ -211,6 +154,7 @@ enum PaymentMethod {
 
 enum UserType {
   ADMIN
+  FILLER
   SUPERADMIN
   DATAENCODER
 }

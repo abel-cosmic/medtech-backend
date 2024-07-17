@@ -6,6 +6,7 @@ import {
 import { UserType } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { User } from '@prisma/client';
 import { PrismaService } from '@/prisma/prisma.service';
 import { GetAllUsersDto } from './dto/get-all-user.dto';
@@ -20,7 +21,7 @@ export class UserService {
     username: string,
     phoneNumber: string,
     password: string,
-    branchId?: number,
+    pricePerForm?: number,
   ): Promise<{ message: string; data: UserWithoutPassword }> {
     const existingUser = await this.prisma.user.findUnique({
       where: { username },
@@ -29,6 +30,25 @@ export class UserService {
       throw new BadRequestException('User already exists');
     }
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Function to generate a unique filler code
+    const generateUniqueFillerCode = async (): Promise<string> => {
+      let fillerCode;
+      let isUnique = false;
+      while (!isUnique) {
+        fillerCode = crypto.randomBytes(10).toString('hex');
+        const existingCode = await this.prisma.user.findUnique({
+          where: { fillerCode },
+        });
+        if (!existingCode) {
+          isUnique = true;
+        }
+      }
+      return fillerCode;
+    };
+
+    const fillerCode = await generateUniqueFillerCode();
+
     const newUser = await this.prisma.user.create({
       data: {
         userType,
@@ -37,6 +57,8 @@ export class UserService {
         username,
         phoneNumber,
         password: hashedPassword,
+        fillerCode,
+        pricePerForm,
       },
       select: {
         id: true,
@@ -46,6 +68,8 @@ export class UserService {
         firstName: true,
         lastName: true,
         username: true,
+        fillerCode: true,
+        pricePerForm: true,
         phoneNumber: true,
         password: false,
       },
@@ -57,23 +81,23 @@ export class UserService {
         });
         break;
       case UserType.ADMIN:
-        if (!branchId) {
-          throw new BadRequestException(
-            'branchId is required for ADMIN user type',
-          );
-        }
         await this.prisma.admin.create({
-          data: { userId: newUser.id, branchId },
+          data: { userId: newUser.id },
         });
         break;
       case UserType.DATAENCODER:
-        if (!branchId) {
+        await this.prisma.dataEncoder.create({
+          data: { userId: newUser.id },
+        });
+        break;
+      case UserType.FILLER:
+        if (!pricePerForm) {
           throw new BadRequestException(
-            'branchId is required for DATAENCODER user type',
+            'Price per form is required for FILLER user type',
           );
         }
         await this.prisma.dataEncoder.create({
-          data: { userId: newUser.id, branchId },
+          data: { userId: newUser.id },
         });
         break;
       default:
@@ -117,6 +141,8 @@ export class UserService {
         username: true,
         phoneNumber: true,
         password: false,
+        fillerCode: true,
+        pricePerForm: true,
       },
     });
 
@@ -142,6 +168,8 @@ export class UserService {
         username: true,
         phoneNumber: true,
         password: false,
+        fillerCode: true,
+        pricePerForm: true,
       },
     });
     if (!user) {
@@ -193,6 +221,8 @@ export class UserService {
         username: true,
         phoneNumber: true,
         password: false,
+        fillerCode: true,
+        pricePerForm: true,
       },
     });
 

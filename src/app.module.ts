@@ -7,7 +7,6 @@ import { AuthController } from './auth/auth.controller';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { BranchModule } from './branch/branch.module';
 import { AdminModule } from './admin/admin.module';
 import { DataEncoderModule } from './data-encoder/data-encoder.module';
 import { SuperAdminModule } from './super-admin/super-admin.module';
@@ -19,7 +18,6 @@ import { SuperAdminModule } from './super-admin/super-admin.module';
     PrismaModule,
     UserModule,
     AuthModule,
-    BranchModule,
     AdminModule,
     DataEncoderModule,
     SuperAdminModule,
