@@ -72,20 +72,20 @@ model DataEncoder {
 model Payment {
   id              Int           @id @default(autoincrement())
   adminId         Int
-  fillerId        Int
+  fillerId        Int?
   name            String
   description     String?
   madeBy          String
   madeTo          String
-  accountNumber   String
-  referenceNumber String
+  accountNumber   String?
+  referenceNumber String?
   amount          Int
   method          PaymentMethod
-  startDate       DateTime
-  endDate         DateTime
+  startDate       DateTime?
+  endDate         DateTime?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @default(now())
-  filler          Filler        @relation(fields: [fillerId], references: [id], onDelete: Cascade)
+  filler          Filler?       @relation(fields: [fillerId], references: [id], onDelete: Cascade)
   admin           Admin         @relation(fields: [adminId], references: [id], onDelete: Cascade)
 }
 
