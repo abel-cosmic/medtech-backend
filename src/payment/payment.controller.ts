@@ -66,6 +66,7 @@ export class PaymentController {
   // @UseGuards(UserTypeGuard)
   // @UserType('SUPERADMIN')
   @Delete(':id')
+  @UsePipes(new ValidationPipe())
   remove(@Param('id') id: string) {
     return this.paymentService.remove(+id);
   }
