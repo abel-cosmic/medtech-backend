@@ -1,5 +1,18 @@
-import { Optional } from '@nestjs/common';
-import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+
+export enum FormStatus {
+  NOTFILLED = 'NOTFILLED',
+  ASSIGNED = 'ASSIGNED',
+  FILLED = 'FILLED',
+  PAID = 'PAID',
+}
 
 export class CreateFormDto {
   @IsNumber()
@@ -34,9 +47,10 @@ export class CreateFormDto {
   @IsNotEmpty()
   lastNameAm!: string;
 
-  @IsString()
+  @IsDate()
+  @Type(() => Date)
   @IsNotEmpty()
-  birthDate!: string;
+  birthDate!: Date;
 
   @IsString()
   @IsNotEmpty()
@@ -54,7 +68,7 @@ export class CreateFormDto {
   @IsNotEmpty()
   identification!: string;
 
-  @IsString()
+  @IsEnum(FormStatus)
   @IsNotEmpty()
   status!: FormStatus;
 
@@ -70,17 +84,13 @@ export class CreateFormDto {
   @IsNotEmpty()
   remainingPrice!: number;
 
-  @IsString()
+  @IsDate()
+  @Type(() => Date)
   @IsNotEmpty()
-  issueDate!: string;
+  issueDate!: Date;
 
-  @IsString()
+  @IsDate()
+  @Type(() => Date)
   @IsNotEmpty()
-  submissionDate!: string;
-}
-export enum FormStatus {
-  NOTFILLED = 'NOTFILLED',
-  ASSIGNED = 'ASSIGNED',
-  FILLED = 'FILLED',
-  PAID = 'PAID',
+  submissionDate!: Date;
 }

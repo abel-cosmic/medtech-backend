@@ -13,6 +13,7 @@ import { SuperAdminModule } from './super-admin/super-admin.module';
 import { PaymentModule } from './payment/payment.module';
 import { RegionModule } from './region/region.module';
 import { FormModule } from './form/form.module';
+import { FileUploadService } from './file-upload/file-upload.service';
 
 @Module({
   imports: [
@@ -29,6 +30,6 @@ import { FormModule } from './form/form.module';
     FormModule,
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService],
+  providers: [AppService, FileUploadService],
 })
 export class AppModule {}
