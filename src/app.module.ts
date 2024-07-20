@@ -12,6 +12,7 @@ import { DataEncoderModule } from './data-encoder/data-encoder.module';
 import { SuperAdminModule } from './super-admin/super-admin.module';
 import { PaymentModule } from './payment/payment.module';
 import { RegionModule } from './region/region.module';
+import { FormModule } from './form/form.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { RegionModule } from './region/region.module';
     SuperAdminModule,
     PaymentModule,
     RegionModule,
+    FormModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService],
