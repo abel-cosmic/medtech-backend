@@ -3,6 +3,7 @@ import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
 import { Form } from '@prisma/client';
 import { PrismaService } from '@/prisma/prisma.service';
+import { GetAllFormsDto } from './dto/get-all-form.dto';
 
 @Injectable()
 export class FormService {
@@ -20,8 +21,27 @@ export class FormService {
     };
   }
 
-  findAll() {
-    return `This action returns all form`;
+  async findAll(params?: GetAllFormsDto): Promise<{
+    message: string;
+    data: Form[];
+  }> {
+    const { skip = 0, take = 10, cursor, where, orderBy } = params || {};
+    // Parse skip and take as integers
+    const skipInt = parseInt(skip as string, 10) || 0;
+    const takeInt = parseInt(take as string, 10) || 10;
+
+    const forms = await this.prisma.form.findMany({
+      skip: skipInt,
+      take: takeInt,
+      cursor,
+      where,
+      orderBy,
+    });
+
+    return {
+      message: 'Forms retrieved successfully',
+      data: forms,
+    };
   }
 
   findOne(id: number) {

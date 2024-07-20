@@ -8,10 +8,13 @@ import {
   Delete,
   UsePipes,
   ValidationPipe,
+  Query,
 } from '@nestjs/common';
 import { FormService } from './form.service';
 import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
+import { Form } from '@prisma/client';
+import { GetAllFormsDto } from './dto/get-all-form.dto';
 
 @Controller('form')
 export class FormController {
@@ -27,8 +30,11 @@ export class FormController {
   }
 
   @Get()
-  findAll() {
-    return this.formService.findAll();
+  findAll(@Query() params?: GetAllFormsDto): Promise<{
+    message: string;
+    data: Form[];
+  }> {
+    return this.formService.findAll(params);
   }
 
   @Get(':id')
