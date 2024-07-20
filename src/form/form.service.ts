@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateFormDto } from './dto/create-form.dto';
+import { CreateFormDto, FormStatus } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
 import { Form } from '@prisma/client';
 import { PrismaService } from '@/prisma/prisma.service';
@@ -76,6 +76,43 @@ export class FormService {
     }
     return {
       message: `Form with ID ${id} deleted successfully`,
+    };
+  }
+
+  async findByStatus(
+    status: FormStatus,
+  ): Promise<{ message: string; data: Form[] }> {
+    if (!Object.values(FormStatus).includes(status)) {
+      throw new NotFoundException('Invalid status');
+    }
+    const forms = await this.prisma.form.findMany({
+      where: { status },
+    });
+    return {
+      message: 'Forms retrieved successfully',
+      data: forms,
+    };
+  }
+
+  async findAssignedForms(): Promise<{ message: string; data: Form[] }> {
+    const forms = await this.prisma.form.findMany({
+      where: { status: FormStatus.ASSIGNED },
+    });
+    return {
+      message: 'Assigned forms retrieved successfully',
+      data: forms,
+    };
+  }
+
+  async findFormsByFillerId(
+    dataEncoderId: number,
+  ): Promise<{ message: string; data: Form[] }> {
+    const forms = await this.prisma.form.findMany({
+      where: { dataEncoderId },
+    });
+    return {
+      message: 'Forms retrieved successfully',
+      data: forms,
     };
   }
 }

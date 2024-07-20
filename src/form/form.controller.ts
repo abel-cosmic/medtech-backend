@@ -15,7 +15,7 @@ import {
   Body,
 } from '@nestjs/common';
 import { FormService } from './form.service';
-import { CreateFormDto } from './dto/create-form.dto';
+import { CreateFormDto, FormStatus } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
 import { Form } from '@prisma/client';
 import { GetAllFormsDto } from './dto/get-all-form.dto';
@@ -73,6 +73,7 @@ export class FormController {
       data: result,
     };
   }
+
   @Get()
   findAll(@Query() params?: GetAllFormsDto): Promise<{
     message: string;
@@ -89,6 +90,7 @@ export class FormController {
   }> {
     return this.formService.findOne(+id);
   }
+
   @UsePipes(new ValidationPipe())
   @Patch(':id')
   @UseInterceptors(
@@ -135,5 +137,30 @@ export class FormController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.formService.remove(+id);
+  }
+
+  @UsePipes(new ValidationPipe())
+  @Get('status/:status')
+  async findByStatus(
+    @Param('status') status: FormStatus,
+  ): Promise<{ message: string; data: Form[] }> {
+    const forms = await this.formService.findByStatus(status);
+    return forms;
+  }
+
+  @UsePipes(new ValidationPipe())
+  @Get('assigned')
+  async findAssignedForms(): Promise<{ message: string; data: Form[] }> {
+    const forms = await this.formService.findAssignedForms();
+    return forms;
+  }
+
+  @UsePipes(new ValidationPipe())
+  @Get('filler/:fillerId')
+  async findFormsByFillerId(
+    @Param('fillerId') fillerId: string,
+  ): Promise<{ message: string; data: Form[] }> {
+    const forms = await this.formService.findFormsByFillerId(Number(fillerId));
+    return forms;
   }
 }
