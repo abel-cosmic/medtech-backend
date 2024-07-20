@@ -29,6 +29,8 @@ export class FormController {
     private readonly fileUploadService: FileUploadService,
   ) {}
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
   @UsePipes(new ValidationPipe())
   @Post()
   @UseInterceptors(
@@ -74,6 +76,8 @@ export class FormController {
     };
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
   @Get()
   findAll(@Query() params?: GetAllFormsDto): Promise<{
     message: string;
@@ -82,6 +86,8 @@ export class FormController {
     return this.formService.findAll(params);
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
   @UsePipes(new ValidationPipe())
   @Get(':id')
   findOne(@Param('id') id: string): Promise<{
@@ -91,6 +97,8 @@ export class FormController {
     return this.formService.findOne(+id);
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
   @UsePipes(new ValidationPipe())
   @Patch(':id')
   @UseInterceptors(
@@ -133,12 +141,16 @@ export class FormController {
     };
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
   @UsePipes(new ValidationPipe())
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.formService.remove(+id);
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
   @UsePipes(new ValidationPipe())
   @Get('status/:status')
   async findByStatus(
@@ -148,6 +160,8 @@ export class FormController {
     return forms;
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
   @UsePipes(new ValidationPipe())
   @Get('assigned')
   async findAssignedForms(): Promise<{ message: string; data: Form[] }> {
@@ -155,6 +169,8 @@ export class FormController {
     return forms;
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
   @UsePipes(new ValidationPipe())
   @Get('data-encoder/:dataEncoderId')
   async findFormsByFillerId(
