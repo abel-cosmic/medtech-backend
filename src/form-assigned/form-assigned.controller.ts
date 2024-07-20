@@ -71,6 +71,27 @@ export class FormAssignedController {
   remove(@Param('id') id: string) {
     return this.formAssignedService.remove(+id);
   }
+  // @Get('/filler/:fillerId')
+  // async findByFillerId(
+  //   @Param('fillerId') fillerId: string,
+  //   @Query('status') status?: FormStatus,
+  // ): Promise<{ message: string; data: FormAssigned[] }> {
+  //   return this.formAssignedService.findByFillerId(+fillerId, status);
+  // }
+
+  // @Patch('/mark-done/:applicationNumber')
+  // async markAsDone(
+  //   @Param('applicationNumber') applicationNumber: string,
+  // ): Promise<{ message: string; data: FormAssigned }> {
+  //   return this.formAssignedService.markAsDone(applicationNumber);
+  // }
+
+  // @Patch('/mark-double/:applicationNumber')
+  // async markAsDouble(
+  //   @Param('applicationNumber') applicationNumber: string,
+  // ): Promise<{ message: string; data: FormAssigned }> {
+  //   return this.formAssignedService.markAsDouble(applicationNumber);
+  // }
 
   // filter form assigned by filler id
   // filter form assigned by filler id by status as well
