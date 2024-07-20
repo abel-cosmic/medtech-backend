@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { FormService } from './form.service';
 import { CreateFormDto } from './dto/create-form.dto';
@@ -15,9 +17,13 @@ import { UpdateFormDto } from './dto/update-form.dto';
 export class FormController {
   constructor(private readonly formService: FormService) {}
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
   @Post()
-  create(@Body() createFormDto: CreateFormDto) {
-    return this.formService.create(createFormDto);
+  @UsePipes(new ValidationPipe())
+  @Post()
+  create(@Body() data: CreateFormDto) {
+    return this.formService.create(data);
   }
 
   @Get()
