@@ -93,7 +93,22 @@ export class PaymentService {
       data: updatedPayment,
     };
   }
-  remove(id: number) {
-    return `This action removes a #${id} payment`;
+  async remove(id: number): Promise<{
+    message: string;
+  }> {
+    // can you cascade delete the relationships as well
+
+    const deletedPayment = await this.prisma.payment.findUnique({
+      where: { id },
+    });
+    if (!deletedPayment) {
+      throw new NotFoundException(`Payment with ID ${id} not found`);
+    }
+    await this.prisma.payment.delete({
+      where: { id },
+    });
+    return {
+      message: 'Payment deleted successfully',
+    };
   }
 }
