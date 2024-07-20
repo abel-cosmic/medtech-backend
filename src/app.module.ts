@@ -14,6 +14,7 @@ import { PaymentModule } from './payment/payment.module';
 import { RegionModule } from './region/region.module';
 import { FormModule } from './form/form.module';
 import { FileUploadService } from './file-upload/file-upload.service';
+import { FormAssignedModule } from './form-assigned/form-assigned.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { FileUploadService } from './file-upload/file-upload.service';
     PaymentModule,
     RegionModule,
     FormModule,
+    FormAssignedModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, FileUploadService],
