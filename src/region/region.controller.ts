@@ -22,7 +22,6 @@ export class RegionController {
 
   // @UseGuards(UserTypeGuard)
   // @UserType('SUPERADMIN')
-  @Post()
   @UsePipes(new ValidationPipe())
   @Post()
   create(@Body() data: CreateRegionDto) {
@@ -53,7 +52,6 @@ export class RegionController {
 
   // @UseGuards(UserTypeGuard)
   // @UserType('SUPERADMIN')
-  @Delete(':id')
   @UsePipes(new ValidationPipe())
   @Patch(':id')
   update(
@@ -68,7 +66,6 @@ export class RegionController {
 
   // @UseGuards(UserTypeGuard)
   // @UserType('SUPERADMIN')
-  @Delete(':id')
   @UsePipes(new ValidationPipe())
   @Delete(':id')
   remove(@Param('id') id: string) {

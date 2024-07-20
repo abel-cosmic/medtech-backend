@@ -22,13 +22,14 @@ export class FormController {
 
   // @UseGuards(UserTypeGuard)
   // @UserType('SUPERADMIN')
-  @Post()
   @UsePipes(new ValidationPipe())
   @Post()
   create(@Body() data: CreateFormDto) {
     return this.formService.create(data);
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
   @Get()
   findAll(@Query() params?: GetAllFormsDto): Promise<{
     message: string;
@@ -37,16 +38,25 @@ export class FormController {
     return this.formService.findAll(params);
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
+  @UsePipes(new ValidationPipe())
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.formService.findOne(+id);
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
+  @UsePipes(new ValidationPipe())
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateFormDto: UpdateFormDto) {
     return this.formService.update(+id, updateFormDto);
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
+  @UsePipes(new ValidationPipe())
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.formService.remove(+id);

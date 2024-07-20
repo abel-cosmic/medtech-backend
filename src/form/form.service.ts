@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
 import { Form } from '@prisma/client';
@@ -44,8 +44,20 @@ export class FormService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} form`;
+  async findOne(id: number): Promise<{
+    message: string;
+    data: Form;
+  }> {
+    const form = await this.prisma.form.findUnique({
+      where: { id },
+    });
+    if (!form) {
+      throw new NotFoundException(`Form with ID ${id} not found`);
+    }
+    return {
+      message: 'Form retrieved successfully',
+      data: form,
+    };
   }
 
   update(id: number, updateFormDto: UpdateFormDto) {
