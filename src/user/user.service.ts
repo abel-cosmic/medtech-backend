@@ -152,10 +152,7 @@ export class UserService {
     };
   }
 
-  async findOne(id: number): Promise<{
-    message: string;
-    data: UserWithoutPassword;
-  }> {
+  async findOne(id: number): Promise<UserWithoutPassword> {
     const user = await this.prisma.user.findUnique({
       where: { id },
       select: {
@@ -172,13 +169,12 @@ export class UserService {
         pricePerForm: true,
       },
     });
+
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    return {
-      message: 'User retrieved Successfully',
-      data: user,
-    };
+
+    return user;
   }
 
   async update(
@@ -252,6 +248,39 @@ export class UserService {
 
     return {
       message: 'User deleted successfully',
+    };
+  }
+
+  async findAllByType(
+    userType: UserType,
+  ): Promise<{ message: string; data: UserWithoutPassword[] }> {
+    // Validate if the provided userType is valid
+    if (!Object.values(UserType).includes(userType)) {
+      throw new BadRequestException('Invalid user type');
+    }
+
+    const users = await this.prisma.user.findMany({
+      where: {
+        userType: userType,
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        userType: true,
+        firstName: true,
+        lastName: true,
+        username: true,
+        fillerCode: true,
+        pricePerForm: true,
+        phoneNumber: true,
+        password: false,
+      },
+    });
+
+    return {
+      message: `Users with type ${userType} retrieved successfully`,
+      data: users,
     };
   }
 }
