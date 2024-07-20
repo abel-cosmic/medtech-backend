@@ -44,12 +44,21 @@ export class RegionController {
   // @UserType('SUPERADMIN')
   @UsePipes(new ValidationPipe())
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<{
+    message: string;
+    data: Region;
+  }> {
     return this.regionService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRegionDto: UpdateRegionDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateRegionDto: UpdateRegionDto,
+  ): Promise<{
+    message: string;
+    data: Region;
+  }> {
     return this.regionService.update(+id, updateRegionDto);
   }
 

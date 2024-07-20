@@ -56,8 +56,27 @@ export class RegionService {
     };
   }
 
-  update(id: number, updateRegionDto: UpdateRegionDto) {
-    return `This action updates a #${id} region`;
+  async update(
+    id: number,
+    updateRegionDto: UpdateRegionDto,
+  ): Promise<{
+    message: string;
+    data: Region;
+  }> {
+    const region = await this.prisma.region.findUnique({
+      where: { id },
+    });
+    if (!region) {
+      throw new NotFoundException(`Region with ID ${id} not found`);
+    }
+    const updatedRegion = await this.prisma.region.update({
+      where: { id },
+      data: updateRegionDto,
+    });
+    return {
+      message: 'Region updated successfully',
+      data: updatedRegion,
+    };
   }
 
   remove(id: number) {
