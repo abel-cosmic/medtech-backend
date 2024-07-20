@@ -75,7 +75,20 @@ export class FormAssignedService {
     };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} formAssigned`;
+  async remove(id: number): Promise<{
+    message: string;
+  }> {
+    const formAssigned = await this.prisma.formAssigned.findUnique({
+      where: { id },
+    });
+    if (!formAssigned) {
+      throw new NotFoundException(`FormAssigned with ID ${id} not found`);
+    }
+    await this.prisma.formAssigned.delete({
+      where: { id },
+    });
+    return {
+      message: 'FormAssigned deleted successfully',
+    };
   }
 }
