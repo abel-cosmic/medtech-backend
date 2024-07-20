@@ -25,27 +25,27 @@ export class CreateFormDto {
 
   @IsString()
   @IsNotEmpty()
-  firstName!: string;
+  readonly firstName!: string;
 
   @IsString()
   @IsNotEmpty()
-  middleName!: string;
+  readonly middleName!: string;
 
   @IsString()
   @IsNotEmpty()
-  lastName!: string;
+  readonly lastName!: string;
 
   @IsString()
   @IsNotEmpty()
-  firstNameAm!: string;
+  readonly firstNameAm!: string;
 
   @IsString()
   @IsNotEmpty()
-  middleNameAm!: string;
+  readonly middleNameAm!: string;
 
   @IsString()
   @IsNotEmpty()
-  lastNameAm!: string;
+  readonly lastNameAm!: string;
 
   @IsDate()
   @Type(() => Date)
@@ -58,7 +58,7 @@ export class CreateFormDto {
 
   @IsString()
   @IsNotEmpty()
-  city!: string;
+  readonly city!: string;
 
   @IsString()
   @IsNotEmpty()
