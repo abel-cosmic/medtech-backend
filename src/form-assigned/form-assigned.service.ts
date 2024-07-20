@@ -55,8 +55,24 @@ export class FormAssignedService {
     };
   }
 
-  update(id: number, updateFormAssignedDto: UpdateFormAssignedDto) {
-    return `This action updates a #${id} formAssigned`;
+  async update(
+    id: number,
+    data: UpdateFormAssignedDto,
+  ): Promise<{ message: string; data: FormAssigned }> {
+    const formAssigned = await this.prisma.formAssigned.findUnique({
+      where: { id },
+    });
+    if (!formAssigned) {
+      throw new NotFoundException(`FormAssigned with ID ${id} not found`);
+    }
+    const updatedFormAssigned = await this.prisma.formAssigned.update({
+      where: { id },
+      data,
+    });
+    return {
+      message: 'FormAssigned updated successfully',
+      data: updatedFormAssigned,
+    };
   }
 
   remove(id: number) {

@@ -57,7 +57,10 @@ export class FormAssignedController {
   update(
     @Param('id') id: string,
     @Body() updateFormAssignedDto: UpdateFormAssignedDto,
-  ) {
+  ): Promise<{
+    message: string;
+    data: FormAssigned;
+  }> {
     return this.formAssignedService.update(+id, updateFormAssignedDto);
   }
 
