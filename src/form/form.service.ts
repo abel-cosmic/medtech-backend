@@ -66,7 +66,16 @@ export class FormService {
     return form;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} form`;
+  async remove(id: number): Promise<{ message: string }> {
+    // Delete a form entry by ID
+    const form = await this.prisma.form.delete({
+      where: { id },
+    });
+    if (!form) {
+      throw new NotFoundException(`Form with ID ${id} not found`);
+    }
+    return {
+      message: `Form with ID ${id} deleted successfully`,
+    };
   }
 }
