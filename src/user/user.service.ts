@@ -47,7 +47,16 @@ export class UserService {
       return fillerCode;
     };
 
-    const fillerCode = await generateUniqueFillerCode();
+    let fillerCode = null;
+    if (userType === UserType.FILLER) {
+      if (!pricePerForm) {
+        throw new BadRequestException(
+          'Price per form is required for FILLER user type',
+        );
+      }
+
+      fillerCode = await generateUniqueFillerCode();
+    }
 
     const newUser = await this.prisma.user.create({
       data: {
@@ -68,8 +77,8 @@ export class UserService {
         firstName: true,
         lastName: true,
         username: true,
-        fillerCode: true,
-        pricePerForm: true,
+        fillerCode: userType === UserType.FILLER,
+        pricePerForm: userType === UserType.FILLER,
         phoneNumber: true,
         password: false,
       },
