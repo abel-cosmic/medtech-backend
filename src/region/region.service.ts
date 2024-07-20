@@ -1,11 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRegionDto } from './dto/create-region.dto';
 import { UpdateRegionDto } from './dto/update-region.dto';
+import { PrismaService } from '@/prisma/prisma.service';
+import { Region } from '@prisma/client';
 
 @Injectable()
 export class RegionService {
-  create(createRegionDto: CreateRegionDto) {
-    return 'This action adds a new region';
+  constructor(private prisma: PrismaService) {}
+  async create(
+    data: CreateRegionDto,
+  ): Promise<{ message: string; data: Region }> {
+    const newRegion = await this.prisma.region.create({
+      data,
+    });
+    return {
+      message: 'Region created successfully',
+      data: newRegion,
+    };
   }
 
   findAll() {
