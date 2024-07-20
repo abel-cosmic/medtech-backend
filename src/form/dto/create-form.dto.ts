@@ -4,79 +4,79 @@ import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 export class CreateFormDto {
   @IsNumber()
   @IsNotEmpty()
-  readonly dataEncoderId!: number;
+  dataEncoderId!: number;
 
   @IsNumber()
   @IsNotEmpty()
-  readonly regionId!: number;
+  regionId!: number;
 
   @IsString()
   @IsNotEmpty()
-  readonly firstName!: string;
+  firstName!: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly middleName!: string;
+  middleName!: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly lastName!: string;
+  lastName!: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly firstNameAm!: string;
+  firstNameAm!: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly middleNameAm!: string;
+  middleNameAm!: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly lastNameAm!: string;
-
-  @IsDate()
-  @IsNotEmpty()
-  readonly birthDate!: Date;
+  lastNameAm!: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly birthPlace!: string;
+  birthDate!: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly city!: string;
+  birthPlace!: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly birthCertificate!: string;
+  city!: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly identification!: string;
+  birthCertificate!: string;
 
   @IsString()
   @IsNotEmpty()
-  readonly status!: FormStatus;
+  identification!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  status!: FormStatus;
 
   @IsNumber()
   @IsNotEmpty()
-  readonly totalPrice!: number;
+  totalPrice!: number;
 
   @IsNumber()
   @IsNotEmpty()
-  readonly brokerCost!: number;
+  brokerCost!: number;
 
   @IsNumber()
   @IsNotEmpty()
-  readonly remainingPrice!: number;
+  remainingPrice!: number;
 
-  @IsDate()
+  @IsString()
   @IsNotEmpty()
-  readonly issueDate!: Date;
+  issueDate!: string;
 
-  @IsDate()
+  @IsString()
   @IsNotEmpty()
-  readonly submissionDate!: Date;
+  submissionDate!: string;
 }
 export enum FormStatus {
   NOTFILLED = 'NOTFILLED',

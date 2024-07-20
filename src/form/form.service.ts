@@ -8,17 +8,11 @@ import { GetAllFormsDto } from './dto/get-all-form.dto';
 @Injectable()
 export class FormService {
   constructor(private prisma: PrismaService) {}
-  async create(data: CreateFormDto): Promise<{
-    message: string;
-    data: Form;
-  }> {
+  async create(data: CreateFormDto): Promise<Form> {
     const newForm = await this.prisma.form.create({
       data: data,
     });
-    return {
-      message: 'Form created successfully',
-      data: newForm,
-    };
+    return newForm;
   }
 
   async findAll(params?: GetAllFormsDto): Promise<{
