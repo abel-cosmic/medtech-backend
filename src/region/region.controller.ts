@@ -51,6 +51,10 @@ export class RegionController {
     return this.regionService.findOne(+id);
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
+  @Delete(':id')
+  @UsePipes(new ValidationPipe())
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -62,6 +66,10 @@ export class RegionController {
     return this.regionService.update(+id, updateRegionDto);
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
+  @Delete(':id')
+  @UsePipes(new ValidationPipe())
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.regionService.remove(+id);

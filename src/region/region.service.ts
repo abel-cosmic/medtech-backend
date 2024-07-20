@@ -79,7 +79,17 @@ export class RegionService {
     };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} region`;
+  async remove(id: number): Promise<{
+    message: string;
+  }> {
+    const deletedRegion = await this.prisma.region.delete({
+      where: { id },
+    });
+    if (!deletedRegion) {
+      throw new NotFoundException(`Region with ID ${id} not found`);
+    }
+    return {
+      message: 'Region deleted successfully',
+    };
   }
 }
