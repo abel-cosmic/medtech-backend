@@ -54,8 +54,16 @@ export class FormService {
     };
   }
 
-  update(id: number, updateFormDto: UpdateFormDto) {
-    return `This action updates a #${id} form`;
+  async update(id: number, data: UpdateFormDto): Promise<Form> {
+    // Update a form entry by ID
+    const form = await this.prisma.form.update({
+      where: { id },
+      data,
+    });
+    if (!form) {
+      throw new NotFoundException(`Form with ID ${id} not found`);
+    }
+    return form;
   }
 
   remove(id: number) {
