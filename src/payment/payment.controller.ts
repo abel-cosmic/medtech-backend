@@ -39,7 +39,7 @@ export class PaymentController {
     message: string;
     data: Payment[];
   }> {
-    return this.paymentService.findAll();
+    return this.paymentService.findAll(params);
   }
 
   // @UseGuards(UserTypeGuard)
