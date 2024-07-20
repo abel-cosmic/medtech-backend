@@ -1,6 +1,6 @@
 import {
-  IsInt,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   MinLength,
@@ -32,7 +32,7 @@ export class CreateUserDto {
   @MinLength(8)
   password: string;
 
-  @IsInt()
+  @IsNumber()
   @IsOptional()
   pricePerForm?: number;
 }
