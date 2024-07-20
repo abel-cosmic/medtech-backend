@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRegionDto } from './dto/create-region.dto';
 import { UpdateRegionDto } from './dto/update-region.dto';
 import { PrismaService } from '@/prisma/prisma.service';
@@ -42,8 +42,18 @@ export class RegionService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} region`;
+  async findOne(id: number): Promise<{ message: string; data: Region }> {
+    const region = await this.prisma.region.findUnique({
+      where: { id },
+    });
+    if (!region) {
+      throw new NotFoundException(`Region with ID ${id} not found`);
+    }
+
+    return {
+      message: 'Region retrieved successfully',
+      data: region,
+    };
   }
 
   update(id: number, updateRegionDto: UpdateRegionDto) {

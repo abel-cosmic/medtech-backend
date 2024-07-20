@@ -40,6 +40,9 @@ export class RegionController {
     return this.regionService.findAll(params);
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
+  @UsePipes(new ValidationPipe())
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.regionService.findOne(+id);
