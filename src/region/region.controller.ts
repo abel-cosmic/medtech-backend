@@ -8,10 +8,13 @@ import {
   Delete,
   UsePipes,
   ValidationPipe,
+  Query,
 } from '@nestjs/common';
 import { RegionService } from './region.service';
 import { CreateRegionDto } from './dto/create-region.dto';
 import { UpdateRegionDto } from './dto/update-region.dto';
+import { GetAllRegionsDto } from './dto/get-all-region.dto';
+import { Region } from '@prisma/client';
 
 @Controller('region')
 export class RegionController {
@@ -26,9 +29,15 @@ export class RegionController {
     return this.regionService.create(data);
   }
 
+  // @UseGuards(UserTypeGuard)
+  // @UserType('SUPERADMIN')
+  @UsePipes(new ValidationPipe())
   @Get()
-  findAll() {
-    return this.regionService.findAll();
+  findAll(@Query() params?: GetAllRegionsDto): Promise<{
+    message: string;
+    data: Region[];
+  }> {
+    return this.regionService.findAll(params);
   }
 
   @Get(':id')

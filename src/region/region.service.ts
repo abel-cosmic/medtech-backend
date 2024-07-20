@@ -3,6 +3,7 @@ import { CreateRegionDto } from './dto/create-region.dto';
 import { UpdateRegionDto } from './dto/update-region.dto';
 import { PrismaService } from '@/prisma/prisma.service';
 import { Region } from '@prisma/client';
+import { GetAllRegionsDto } from './dto/get-all-region.dto';
 
 @Injectable()
 export class RegionService {
@@ -19,8 +20,26 @@ export class RegionService {
     };
   }
 
-  findAll() {
-    return `This action returns all region`;
+  async findAll(
+    params?: GetAllRegionsDto,
+  ): Promise<{ message: string; data: Region[] }> {
+    const { skip = 0, take = 10, cursor, where, orderBy } = params || {};
+    // Parse skip and take as integers
+    const skipInt = parseInt(skip as string, 10) || 0 || 0;
+    const takeInt = parseInt(take as string, 10) || 10 || 0;
+
+    const regions = await this.prisma.region.findMany({
+      skip: skipInt,
+      take: takeInt,
+      cursor,
+      where,
+      orderBy,
+    });
+
+    return {
+      message: 'Regions retrieved successfully',
+      data: regions,
+    };
   }
 
   findOne(id: number) {
