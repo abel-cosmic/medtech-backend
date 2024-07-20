@@ -156,9 +156,9 @@ export class FormController {
   }
 
   @UsePipes(new ValidationPipe())
-  @Get('filler/:fillerId')
+  @Get('data-encoder/:dataEncoderId')
   async findFormsByFillerId(
-    @Param('fillerId') fillerId: string,
+    @Param('dataEncoderId') fillerId: string,
   ): Promise<{ message: string; data: Form[] }> {
     const forms = await this.formService.findFormsByFillerId(Number(fillerId));
     return forms;
