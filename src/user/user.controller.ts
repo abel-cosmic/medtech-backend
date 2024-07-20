@@ -14,7 +14,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, UserType } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthService } from '@/auth/auth.service';
 import { User } from '@prisma/client';
@@ -23,6 +23,7 @@ import { LocalAuthGuard } from '@/auth/local.auth.guard';
 // import { UserTypeGuard } from '@/auth/user-type.guard';
 // import { UserType } from '@/auth/user-type.decorator';
 import { GetAllUsersDto } from './dto/get-all-user.dto';
+import { GetUsersByTypeDto } from './dto/get-user-by-user-type.dto';
 
 type UserWithoutPassword = Omit<User, 'password'>;
 @Controller('user')
@@ -88,14 +89,6 @@ export class UserController {
     return this.userService.findAll(params);
   }
 
-  // @UseGuards(UserTypeGuard)
-  // @UserType('SUPERADMIN', 'ADMIN')
-  @UsePipes(new ValidationPipe())
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
@@ -104,5 +97,19 @@ export class UserController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
+  }
+
+  @Get('by-type')
+  @UsePipes(new ValidationPipe())
+  async findAllByType(
+    @Query('userType') userType: UserType,
+  ): Promise<{ message: string; data: UserWithoutPassword[] }> {
+    return await this.userService.findAllByType(userType);
+  }
+
+  @Get(':id')
+  @UsePipes(new ValidationPipe())
+  async findOne(@Param('id') id: string) {
+    return await this.userService.findOne(+id);
   }
 }
