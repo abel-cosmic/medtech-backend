@@ -1,4 +1,3 @@
-import { Optional } from '@nestjs/common';
 import {
   IsDate,
   IsNotEmpty,
@@ -48,13 +47,13 @@ export class CreatePaymentDto {
   @IsNotEmpty()
   method: PaymentMethod;
 
-  @IsDate()
+  @IsString()
   @IsOptional()
-  startDate?: Date;
+  startDate?: string;
 
-  @IsDate()
+  @IsString()
   @IsOptional()
-  endDate?: Date;
+  endDate?: string;
 }
 
 export enum PaymentMethod {

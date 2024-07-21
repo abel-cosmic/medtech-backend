@@ -81,8 +81,8 @@ model Payment {
   referenceNumber String?
   amount          Int
   method          PaymentMethod
-  startDate       DateTime?
-  endDate         DateTime?
+  startDate       String?
+  endDate         String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @default(now())
   filler          Filler?       @relation(fields: [fillerId], references: [id], onDelete: Cascade)
