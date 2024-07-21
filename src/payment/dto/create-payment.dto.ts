@@ -1,5 +1,11 @@
 import { Optional } from '@nestjs/common';
-import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreatePaymentDto {
   @IsNumber()
@@ -7,7 +13,7 @@ export class CreatePaymentDto {
   adminId: number;
 
   @IsNumber()
-  @Optional()
+  @IsOptional()
   fillerId?: number;
 
   @IsString()
@@ -15,7 +21,7 @@ export class CreatePaymentDto {
   name: string;
 
   @IsString()
-  @Optional()
+  @IsOptional()
   description?: string;
 
   @IsString()
@@ -27,11 +33,11 @@ export class CreatePaymentDto {
   madeTo: string;
 
   @IsString()
-  @Optional()
+  @IsOptional()
   accountNumber?: string;
 
   @IsString()
-  @Optional()
+  @IsOptional()
   referenceNumber?: string;
 
   @IsNumber()
@@ -43,11 +49,11 @@ export class CreatePaymentDto {
   method: PaymentMethod;
 
   @IsDate()
-  @Optional()
+  @IsOptional()
   startDate?: Date;
 
   @IsDate()
-  @Optional()
+  @IsOptional()
   endDate?: Date;
 }
 
