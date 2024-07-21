@@ -7,7 +7,7 @@ import { UserType } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { PrismaService } from '@/prisma/prisma.service';
 import { GetAllUsersDto } from './dto/get-all-user.dto';
 type UserWithoutPassword = Omit<User, 'password'>;
@@ -105,8 +105,8 @@ export class UserService {
             'Price per form is required for FILLER user type',
           );
         }
-        await this.prisma.dataEncoder.create({
-          data: { userId: newUser.id },
+        await this.prisma.filler.create({
+          data: { userId: newUser.id } as unknown as Prisma.FillerCreateInput,
         });
         break;
       default:

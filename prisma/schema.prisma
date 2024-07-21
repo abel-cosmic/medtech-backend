@@ -39,13 +39,12 @@ model User {
 
 model Filler {
   id           Int            @id @default(autoincrement())
-  userId       Int?
-  branchId     Int
+  userId       Int
   fillerCode   String         @unique
   pricePerForm Int
   FormAssigned FormAssigned[]
   Payment      Payment[]
-  User         User?          @relation(fields: [userId], references: [id])
+  User         User           @relation(fields: [userId], references: [id])
 }
 
 model Admin {
